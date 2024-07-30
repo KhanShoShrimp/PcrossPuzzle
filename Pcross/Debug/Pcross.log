@@ -1,0 +1,8 @@
+﻿  Byte.cpp
+  Hint.cpp
+C:\Users\khk79\OneDrive\바탕 화면\Projects\Pcross\Pcross\Hint.cpp(80,19): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\khk79\OneDrive\바탕 화면\Projects\Pcross\Pcross\Hint.cpp(86,30): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\khk79\OneDrive\바탕 화면\Projects\Pcross\Pcross\Hint.cpp(93,32): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  Main.cpp
+  코드를 생성하고 있습니다...
+  Pcross.vcxproj -> C:\Users\khk79\OneDrive\바탕 화면\Projects\Pcross\Debug\Pcross.exe
