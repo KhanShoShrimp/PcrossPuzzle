@@ -12,20 +12,6 @@ Hint::Hint(Int64 select, Int64 block, int length, vector<int>& answer) :
 	Solve();
 }
 
-void Hint::UpdateSpaces()
-{
-	int start = 0;
-	int end = 0;
-
-	m_Spaces.clear();
-
-	while (TryGetSpace(start, end))
-	{
-		m_Spaces.push_back(start);
-		m_Spaces.push_back(end);
-	}
-}
-
 void Hint::Solve()
 {
 	if (!IsVaildAnswer())
@@ -40,6 +26,48 @@ void Hint::Solve()
 	Search(0, 0, ~Byte::GetMask(0, m_Length - 1), Byte::EMPTY);
 
 	WriteHint();
+}
+
+#pragma region [Answer]
+bool Hint::IsVaildAnswer()
+{
+	if (m_Answer.size() == 0)
+	{
+		return false;
+	}
+
+	if (m_Answer[0] == 0)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+int Hint::AnswerTotalSize(int answer_start, int answer_end)
+{
+	int totalsize = 0;
+	for (int i = answer_start; i < answer_end - 1; i++)
+	{
+		totalsize += m_Answer[i] + 1;
+	}
+	return totalsize + m_Answer[answer_end];
+}
+#pragma endregion
+
+#pragma region [Space]
+void Hint::UpdateSpaces()
+{
+	int start = 0;
+	int end = 0;
+
+	m_Spaces.clear();
+
+	while (TryGetSpace(start, end))
+	{
+		m_Spaces.push_back(start);
+		m_Spaces.push_back(end);
+	}
 }
 
 bool Hint::TryGetSpace(int& start, int& end)
@@ -59,22 +87,25 @@ bool Hint::TryGetSpace(int& start, int& end)
 	return true;
 }
 
-
-bool Hint::IsVaildAnswer()
+bool Hint::CheckSpacing(int space, int answer_begin, int answer_end)
 {
-	if (m_Answer.size() == 0)
+	for (int i = answer_begin; i < answer_end; i++)
 	{
-		return false;
+		if (m_Answer[i] + 1 <= space)
+		{
+			space -= m_Answer[i] + 1;
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	if (m_Answer[0] == 0)
-	{
-		return false;
-	}
-
-	return true;
+	return m_Answer[answer_end] <= space;
+	//return AnswerTotalSize(answer_begin, answer_end) <= space;
 }
+#pragma endregion
 
+#pragma region [Search]
 void Hint::Search(int space_index, int answer_index, Int64 select, Int64 block)
 {
 	if (answer_index >= m_Answer.size())
@@ -123,23 +154,6 @@ void Hint::Search(int space_index, int answer_index, Int64 select, Int64 block)
 	}
 }
 
-bool Hint::CheckSpacing(int space, int answer_begin, int answer_end)
-{
-	for (int i = answer_begin; i < answer_end; i++)
-	{
-		if (m_Answer[i] + 1 <= space)
-		{
-			space -= m_Answer[i] + 1;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	return m_Answer[answer_end] <= space;
-	//return AnswerTotalSize(answer_begin, answer_end) <= space;
-}
-
 void Hint::OverlapTile(
 	int space_begin, int space_end,
 	int answer_begin, int answer_end,
@@ -183,17 +197,9 @@ void Hint::OverlapTile(
 		}
 	}
 }
+#pragma endregion
 
-int Hint::AnswerTotalSize(int answer_start, int answer_end)
-{
-	int totalsize = 0;
-	for (int i = answer_start; i < answer_end - 1; i++)
-	{
-		totalsize += m_Answer[i] + 1;
-	}
-	return totalsize + m_Answer[answer_end];
-}
-
+#pragma region [Result]
 void Hint::OverlapHint(Int64 select, Int64 block)
 {
 	m_Written = true;
@@ -214,3 +220,4 @@ void Hint::WriteHint()
 		BlockHint = Byte::EMPTY;
 	}
 }
+#pragma endregion
